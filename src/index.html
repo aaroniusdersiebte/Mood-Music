@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Music Player</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Header / Toolbar -->
+        <header class="toolbar">
+            <div class="toolbar-left">
+                <h1 class="app-title">Mood Music</h1>
+            </div>
+            <div class="toolbar-center">
+                <!-- Player Controls -->
+                <div class="player-controls">
+                    <button id="prev-btn" class="control-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                        </svg>
+                    </button>
+                    <button id="play-pause-btn" class="control-btn primary">
+                        <svg id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                        <svg id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                        </svg>
+                    </button>
+                    <button id="next-btn" class="control-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <div class="volume-control">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                    <input type="range" id="volume-slider" min="0" max="100" value="70" class="slider">
+                </div>
+                <button id="settings-btn" class="control-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <h3>Moods</h3>
+                        <button id="add-mood-btn" class="add-btn">+</button>
+                    </div>
+                    <div id="moods-list" class="moods-list"></div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <h3>Bibliothek</h3>
+                        <button id="add-music-btn" class="add-btn">+</button>
+                    </div>
+                    <div class="library-stats">
+                        <span id="total-tracks">0 Tracks</span>
+                        <button id="show-library-btn" class="btn small" style="margin-top: 8px; width: 100%;">Alle anzeigen</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <section class="content-area">
+                <!-- Current Playing Info -->
+                <div id="now-playing" class="now-playing" style="display: none;">
+                    <div class="track-art">
+                        <img id="current-cover" src="" alt="Album Cover">
+                    </div>
+                    <div class="track-info">
+                        <h2 id="current-title">-</h2>
+                        <p id="current-artist">-</p>
+                        <p id="current-album">-</p>
+                    </div>
+                    <div class="progress-container">
+                        <span id="current-time">0:00</span>
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                            <input type="range" id="progress-slider" min="0" max="100" value="0" class="progress-input">
+                        </div>
+                        <span id="duration-time">0:00</span>
+                    </div>
+                </div>
+
+                <!-- Mood Content -->
+                <div id="mood-content" class="mood-content">
+                    <div class="mood-header">
+                        <h2 id="mood-title">Wählen Sie eine Mood aus</h2>
+                        <div class="mood-actions">
+                            <button id="mood-play-btn" class="mood-play-btn" style="display: none;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                Mood abspielen
+                            </button>
+                            <button id="mood-shuffle-btn" class="mood-shuffle-btn" style="display: none;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+                                </svg>
+                                Shuffle
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="tracks-container" class="tracks-container">
+                        <div class="empty-state">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" opacity="0.3">
+                                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                            </svg>
+                            <p>Wählen Sie eine Mood aus oder fügen Sie Musik hinzu</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Audio Element -->
+        <audio id="audio-player" preload="metadata"></audio>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay" style="display: none;">
+        <!-- Add Mood Modal -->
+        <div id="add-mood-modal" class="modal">
+            <div class="modal-header">
+                <h3>Neue Mood erstellen</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="mood-name">Name:</label>
+                    <input type="text" id="mood-name" placeholder="z.B. Entspannt, Energiegeladen...">
+                </div>
+                
+                <!-- Effekt-Vorschau -->
+                <div class="form-group">
+                    <label>Vorschau:</label>
+                    <div id="mood-preview" class="mood-preview">
+                        <div class="mood-preview-background"></div>
+                        <div class="mood-preview-text">Meine neue Mood</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mood-color">Primärfarbe:</label>
+                    <input type="color" id="mood-color" value="#847cf7">
+                </div>
+                <div class="form-group" id="secondary-color-group" style="display: none;">
+                    <label for="mood-color-secondary">Sekundärfarbe:</label>
+                    <input type="color" id="mood-color-secondary" value="#ff6b6b">
+                    <small style="color: #888; font-size: 12px;">Für Gradient und Glühen-Effekte</small>
+                </div>
+                <div class="form-group">
+                    <label for="mood-effect">Effekt:</label>
+                    <select id="mood-effect">
+                        <option value="none">Kein Effekt</option>
+                        <option value="pulse">Pulsierend</option>
+                        <option value="wave">Wabern</option>
+                        <option value="glow">Glühen</option>
+                        <option value="gradient">Farbverlauf</option>
+                        <option value="sparkle">Funkeln</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mood-intensity">Intensität:</label>
+                    <input type="range" id="mood-intensity" min="1" max="10" value="5">
+                    <span id="intensity-value">5</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-mood-btn" class="btn primary">Speichern</button>
+                <button id="cancel-mood-btn" class="btn">Abbrechen</button>
+            </div>
+        </div>
+
+        <!-- Edit Mood Modal -->
+        <div id="edit-mood-modal" class="modal">
+            <div class="modal-header">
+                <h3>Mood bearbeiten</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="edit-mood-name">Name:</label>
+                    <input type="text" id="edit-mood-name" placeholder="z.B. Entspannt, Energiegeladen...">
+                </div>
+                
+                <!-- Effekt-Vorschau -->
+                <div class="form-group">
+                    <label>Vorschau:</label>
+                    <div id="edit-mood-preview" class="mood-preview">
+                        <div class="mood-preview-background"></div>
+                        <div class="mood-preview-text">Mood bearbeiten</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-mood-color">Primärfarbe:</label>
+                    <input type="color" id="edit-mood-color" value="#847cf7">
+                </div>
+                <div class="form-group" id="edit-secondary-color-group" style="display: none;">
+                    <label for="edit-mood-color-secondary">Sekundärfarbe:</label>
+                    <input type="color" id="edit-mood-color-secondary" value="#ff6b6b">
+                    <small style="color: #888; font-size: 12px;">Für Gradient und Glühen-Effekte</small>
+                </div>
+                <div class="form-group">
+                    <label for="edit-mood-effect">Effekt:</label>
+                    <select id="edit-mood-effect">
+                        <option value="none">Kein Effekt</option>
+                        <option value="pulse">Pulsierend</option>
+                        <option value="wave">Wabern</option>
+                        <option value="glow">Glühen</option>
+                        <option value="gradient">Farbverlauf</option>
+                        <option value="sparkle">Funkeln</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-mood-intensity">Intensität:</label>
+                    <input type="range" id="edit-mood-intensity" min="1" max="10" value="5">
+                    <span id="edit-intensity-value">5</span>
+                </div>
+                
+                <div class="form-group mood-stats">
+                    <label>Statistiken:</label>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Tracks:</span>
+                            <span id="edit-mood-track-count">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Erstellt:</span>
+                            <span id="edit-mood-created">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Zuletzt bearbeitet:</span>
+                            <span id="edit-mood-updated">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="update-mood-btn" class="btn primary">Aktualisieren</button>
+                <button id="delete-mood-btn" class="btn danger">Löschen</button>
+                <button id="cancel-edit-mood-btn" class="btn">Abbrechen</button>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal large">
+            <div class="modal-header">
+                <h3>Einstellungen</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-tabs">
+                    <button class="tab-btn active" data-tab="general">Allgemein</button>
+                    <button class="tab-btn" data-tab="audio">Audio</button>
+                    <button class="tab-btn" data-tab="hotkeys">Hotkeys</button>
+                    <button class="tab-btn" data-tab="obs">OBS Integration</button>
+                    <button class="tab-btn" data-tab="appearance">Aussehen</button>
+                </div>
+                
+                <div class="tab-content">
+                    <!-- General Settings -->
+                    <div id="general-tab" class="tab-panel active">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="shuffle-default">
+                                Standardmäßig Shuffle aktivieren
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="auto-advance">
+                                Automatisch zum nächsten Track
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Audio Settings -->
+                    <div id="audio-tab" class="tab-panel">
+                        <div class="form-group">
+                            <label for="fade-time">Übergangszeit (Sekunden):</label>
+                            <input type="number" id="fade-time" min="0" max="10" step="0.5" value="3">
+                        </div>
+                    </div>
+
+                    <!-- Hotkey Settings -->
+                    <div id="hotkeys-tab" class="tab-panel">
+                        <div class="form-group">
+                            <p style="margin-bottom: 16px; color: #888; font-size: 14px;">
+                                Klicken Sie auf ein Eingabefeld und drücken Sie die gewünschte Tastenkombination.
+                            </p>
+                        </div>
+
+                        <h4 style="margin-bottom: 12px; color: var(--text-primary);">Player-Steuerung</h4>
+                        <div class="hotkey-item">
+                            <label>Play/Pause:</label>
+                            <input type="text" id="hotkey-play-pause" class="hotkey-input" readonly placeholder="Klicken und Taste drücken...">
+                            <button class="btn small clear-hotkey" data-target="hotkey-play-pause">✕</button>
+                        </div>
+                        <div class="hotkey-item">
+                            <label>Nächster Track:</label>
+                            <input type="text" id="hotkey-next" class="hotkey-input" readonly placeholder="Klicken und Taste drücken...">
+                            <button class="btn small clear-hotkey" data-target="hotkey-next">✕</button>
+                        </div>
+                        <div class="hotkey-item">
+                            <label>Vorheriger Track:</label>
+                            <input type="text" id="hotkey-prev" class="hotkey-input" readonly placeholder="Klicken und Taste drücken...">
+                            <button class="btn small clear-hotkey" data-target="hotkey-prev">✕</button>
+                        </div>
+
+                        <h4 style="margin: 24px 0 12px; color: var(--text-primary);">Mood-Playlists</h4>
+                        <div id="mood-hotkeys-container">
+                            <!-- Wird dynamisch gefüllt -->
+                        </div>
+                        <button id="add-mood-hotkey" class="btn small" style="margin-top: 12px;">+ Mood-Hotkey hinzufügen</button>
+                    </div>
+
+                    <!-- OBS Settings -->
+                    <div id="obs-tab" class="tab-panel">
+                        <div class="form-group">
+                            <label for="obs-port">Server Port:</label>
+                            <input type="number" id="obs-port" min="3000" max="9999" value="3000">
+                            <small style="color: #fbbf24; font-size: 12px;">⚠️ Neustart der App erforderlich nach Änderung</small>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="obs-always-show">
+                                Overlay immer anzeigen
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="obs-show-duration">Anzeigedauer (Sekunden):</label>
+                            <input type="number" id="obs-show-duration" min="5" max="60" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="obs-transition-time">Übergangszeit (Sekunden):</label>
+                            <input type="number" id="obs-transition-time" min="1" max="10" value="5">
+                        </div>
+                        <div class="obs-info">
+                            <p><strong>Browser Source URL:</strong></p>
+                            <code id="obs-url">http://localhost:3000</code>
+                            <button id="copy-obs-url" class="btn small">Kopieren</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Appearance Settings -->
+                    <div id="appearance-tab" class="tab-panel">
+                        <div class="form-group">
+                            <label for="primary-color">Hintergrundfarbe:</label>
+                            <input type="color" id="primary-color" value="#121212">
+                        </div>
+                        <div class="form-group">
+                            <label for="secondary-color">Akzentfarbe:</label>
+                            <input type="color" id="secondary-color" value="#847cf7">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-settings-btn" class="btn primary">Speichern</button>
+                <button id="cancel-settings-btn" class="btn">Abbrechen</button>
+            </div>
+        </div>
+
+        <!-- Edit Track Metadata Modal -->
+        <div id="edit-track-modal" class="modal">
+            <div class="modal-header">
+                <h3>Metadaten bearbeiten</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="cover-upload-section">
+                    <label>Album Cover:</label>
+                    <div class="cover-preview-container">
+                        <img id="edit-track-cover-preview" class="cover-preview" alt="Cover">
+                        <div class="cover-actions">
+                            <button id="upload-cover-btn" class="btn small">Neues Bild hochladen</button>
+                            <button id="choose-from-library-btn" class="btn small">Aus Bibliothek wählen</button>
+                            <button id="remove-cover-btn" class="btn small danger">Cover entfernen</button>
+                        </div>
+                    </div>
+                    <input type="file" id="cover-file-input" accept="image/*" style="display: none;">
+                </div>
+
+                <div id="image-library" class="image-library" style="display: none;">
+                    <h4>Bild-Bibliothek</h4>
+                    <div id="image-library-grid" class="image-library-grid">
+                        <!-- Wird dynamisch gefüllt -->
+                    </div>
+                    <button id="close-library-btn" class="btn small">Schließen</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-track-title">Titel:</label>
+                    <input type="text" id="edit-track-title" placeholder="Titel">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-track-artist">Künstler:</label>
+                    <input type="text" id="edit-track-artist" placeholder="Künstlername">
+                </div>
+
+                <div class="form-group">
+                    <label>Original-Metadaten:</label>
+                    <div class="original-metadata">
+                        <div class="metadata-item">
+                            <span class="metadata-label">Titel:</span>
+                            <span id="original-title">-</span>
+                        </div>
+                        <div class="metadata-item">
+                            <span class="metadata-label">Künstler:</span>
+                            <span id="original-artist">-</span>
+                        </div>
+                        <div class="metadata-item">
+                            <span class="metadata-label">Album:</span>
+                            <span id="original-album">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-track-metadata-btn" class="btn primary">Speichern</button>
+                <button id="reset-track-metadata-btn" class="btn">Zurücksetzen</button>
+                <button id="cancel-track-metadata-btn" class="btn">Abbrechen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu" style="display: none;">
+        <div class="context-item" data-action="play">Abspielen</div>
+        <div class="context-item" data-action="add-to-mood">Zu Mood hinzufügen</div>
+        <div class="context-item" data-action="remove">Entfernen</div>
+        <div class="context-item separator"></div>
+        <div class="context-item" data-action="show-info">Informationen</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="components/MusicPlayer.js"></script>
+    <script src="components/MoodManager.js"></script>
+    <script src="components/MetadataManager.js"></script>
+    <script src="components/UIManager.js"></script>
+    <script src="utils/AudioUtils.js"></script>
+    <script src="utils/StorageUtils.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

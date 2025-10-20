@@ -1,0 +1,610 @@
+/* Advanced OBS Overlay Styles */
+:root {
+    --primary-color: #121212;
+    --secondary-color: #847cf7;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --text-muted: #666666;
+    --mood-color: #847cf7;
+    --border-radius: 12px;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    background: transparent;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+/* Main Overlay Container - With Album Cover */
+.overlay {
+    position: relative;
+    width: auto;
+    min-width: 350px;
+    max-width: 650px;
+    height: auto;
+    background: rgba(18, 18, 18, 0.95);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.overlay.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.overlay.hidden {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+}
+
+/* Track Container - Horizontal Layout */
+.track-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Album Cover Container */
+.album-cover-container {
+    flex-shrink: 0;
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #333, #444);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.album-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Background Effects Layer - Only This Moves/Animates */
+.overlay::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: -20%;
+    right: -20%;
+    bottom: -20%;
+    width: 140%;
+    height: 140%;
+    background: var(--mood-color);
+    opacity: 0.15;
+    z-index: 0;
+    transition: opacity 0.6s ease, background-color 0.6s ease;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+/* Second layer for multi-layer wave effects */
+.overlay::after {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: -20%;
+    right: -20%;
+    bottom: -20%;
+    width: 140%;
+    height: 140%;
+    background: var(--mood-color-secondary, var(--mood-color));
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 0.6s ease, background-color 0.6s ease;
+    pointer-events: none;
+    filter: blur(10px);
+    will-change: transform, opacity;
+}
+
+/* Enhanced Mood Effects - Only Background Animates */
+
+/* Pulse Effect - Verbessert mit Intensität */
+.mood-pulse::before {
+    animation: pulseBreathing var(--effect-speed, 2.5s) infinite ease-in-out;
+}
+
+@keyframes pulseBreathing {
+    0%, 100% {
+        opacity: calc(var(--effect-intensity, 0.4) * 0.7);
+        transform: scale(1);
+    }
+    50% {
+        opacity: calc(var(--effect-intensity, 0.4) * 1.8);
+        transform: scale(calc(1 + 0.12 * var(--effect-intensity, 0.4)));
+    }
+}
+
+/* Wave Effect - Optimiert für Performance */
+.mood-wave::before {
+    animation: waveFlow var(--effect-speed, 4s) infinite ease-in-out;
+}
+
+.mood-wave::after {
+    opacity: calc(var(--effect-intensity, 0.4) * 0.8);
+    animation: waveCounter var(--effect-speed, 4s) infinite ease-in-out;
+    animation-delay: calc(var(--effect-speed, 4s) * -0.5);
+}
+
+/* Hauptwelle - organische, fließende Bewegung */
+@keyframes waveFlow {
+    0% {
+        transform:
+            translateX(0)
+            translateY(0)
+            scale(1)
+            rotate(0deg);
+        opacity: var(--effect-intensity, 0.4);
+        border-radius: var(--border-radius);
+    }
+
+    20% {
+        transform:
+            translateX(calc(15px * var(--effect-intensity, 0.4)))
+            translateY(calc(-10px * var(--effect-intensity, 0.4)))
+            scale(calc(1 + 0.08 * var(--effect-intensity, 0.4)))
+            rotate(calc(2deg * var(--effect-intensity, 0.4)));
+        opacity: calc(var(--effect-intensity, 0.4) * 1.6);
+    }
+
+    40% {
+        transform:
+            translateX(calc(8px * var(--effect-intensity, 0.4)))
+            translateY(calc(12px * var(--effect-intensity, 0.4)))
+            scale(calc(1 + 0.04 * var(--effect-intensity, 0.4)))
+            rotate(calc(-1deg * var(--effect-intensity, 0.4)));
+        opacity: calc(var(--effect-intensity, 0.4) * 1.3);
+    }
+
+    60% {
+        transform:
+            translateX(calc(-12px * var(--effect-intensity, 0.4)))
+            translateY(calc(8px * var(--effect-intensity, 0.4)))
+            scale(calc(1 + 0.06 * var(--effect-intensity, 0.4)))
+            rotate(calc(1.5deg * var(--effect-intensity, 0.4)));
+        opacity: calc(var(--effect-intensity, 0.4) * 1.5);
+    }
+
+    80% {
+        transform:
+            translateX(calc(-18px * var(--effect-intensity, 0.4)))
+            translateY(calc(-6px * var(--effect-intensity, 0.4)))
+            scale(calc(1 + 0.03 * var(--effect-intensity, 0.4)))
+            rotate(calc(-2deg * var(--effect-intensity, 0.4)));
+        opacity: calc(var(--effect-intensity, 0.4) * 1.4);
+    }
+
+    100% {
+        transform:
+            translateX(0)
+            translateY(0)
+            scale(1)
+            rotate(0deg);
+        opacity: var(--effect-intensity, 0.4);
+        border-radius: var(--border-radius);
+    }
+}
+
+/* Gegenwelle - sanfte Gegenrichtung für Tiefe */
+@keyframes waveCounter {
+    0% {
+        transform:
+            translateX(0)
+            translateY(0)
+            scale(1.05)
+            rotate(0deg);
+        opacity: calc(var(--effect-intensity, 0.4) * 0.6);
+    }
+
+    25% {
+        transform:
+            translateX(calc(-10px * var(--effect-intensity, 0.4)))
+            translateY(calc(8px * var(--effect-intensity, 0.4)))
+            scale(calc(1.05 + 0.04 * var(--effect-intensity, 0.4)))
+            rotate(calc(-1.5deg * var(--effect-intensity, 0.4)));
+        opacity: calc(var(--effect-intensity, 0.4) * 1);
+    }
+
+    50% {
+        transform:
+            translateX(calc(8px * var(--effect-intensity, 0.4)))
+            translateY(calc(-12px * var(--effect-intensity, 0.4)))
+            scale(1.05)
+            rotate(calc(1deg * var(--effect-intensity, 0.4)));
+        opacity: calc(var(--effect-intensity, 0.4) * 0.8);
+    }
+
+    75% {
+        transform:
+            translateX(calc(12px * var(--effect-intensity, 0.4)))
+            translateY(calc(6px * var(--effect-intensity, 0.4)))
+            scale(calc(1.05 + 0.03 * var(--effect-intensity, 0.4)))
+            rotate(calc(1.5deg * var(--effect-intensity, 0.4)));
+        opacity: calc(var(--effect-intensity, 0.4) * 1);
+    }
+
+    100% {
+        transform:
+            translateX(0)
+            translateY(0)
+            scale(1.05)
+            rotate(0deg);
+        opacity: calc(var(--effect-intensity, 0.4) * 0.6);
+    }
+}
+
+/* Glow Effect - Optimiert für Performance */
+.mood-glow::before {
+    animation: glowRadiance var(--effect-speed, 3s) infinite ease-in-out;
+    background: var(--mood-color);
+    filter: blur(8px);
+}
+
+.mood-glow::after {
+    opacity: calc(var(--effect-intensity, 0.4) * 0.5);
+    animation: glowPulse var(--effect-speed, 3s) infinite ease-in-out;
+    animation-delay: calc(var(--effect-speed, 3s) * -0.3);
+    background: var(--mood-color-secondary, var(--mood-color));
+}
+
+@keyframes glowRadiance {
+    0%, 100% {
+        opacity: calc(var(--effect-intensity, 0.4) * 0.6);
+        transform: scale(1);
+    }
+    50% {
+        opacity: calc(var(--effect-intensity, 0.4) * 1.8);
+        transform: scale(1.05);
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: calc(var(--effect-intensity, 0.4) * 0.3);
+    }
+    50% {
+        opacity: calc(var(--effect-intensity, 0.4) * 0.8);
+    }
+}
+
+/* Gradient Effect - Optimiert für Performance */
+.mood-gradient::before {
+    background: linear-gradient(
+        135deg,
+        var(--mood-color) 0%,
+        var(--mood-color-secondary, color-mix(in srgb, var(--mood-color) 60%, white 40%)) 50%,
+        var(--mood-color) 100%
+    );
+    background-size: 400% 400%;
+    animation: gradientFlow var(--effect-speed, 6s) infinite ease-in-out;
+}
+
+.mood-gradient::after {
+    background: radial-gradient(
+        circle at 50% 50%,
+        var(--mood-color-secondary, var(--mood-color)) 0%,
+        transparent 70%
+    );
+    opacity: calc(var(--effect-intensity, 0.4) * 0.6);
+    animation: gradientPulse var(--effect-speed, 6s) infinite ease-in-out;
+    animation-delay: calc(var(--effect-speed, 6s) * -0.5);
+}
+
+@keyframes gradientFlow {
+    0%, 100% {
+        background-position: 0% 50%;
+        opacity: calc(var(--effect-intensity, 0.4) * 0.8);
+    }
+    33% {
+        background-position: 100% 0%;
+        opacity: calc(var(--effect-intensity, 0.4) * 1.4);
+    }
+    66% {
+        background-position: 0% 100%;
+        opacity: calc(var(--effect-intensity, 0.4) * 1.2);
+    }
+}
+
+@keyframes gradientPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: calc(var(--effect-intensity, 0.4) * 0.3);
+    }
+    50% {
+        transform: scale(1.3);
+        opacity: calc(var(--effect-intensity, 0.4) * 0.7);
+    }
+}
+
+/* Sparkle Effect - Background Only */
+.mood-sparkle::before {
+    background-image: 
+        radial-gradient(circle at 15% 25%, var(--mood-color) 2px, transparent 2px),
+        radial-gradient(circle at 85% 75%, var(--mood-color) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 45% 65%, var(--mood-color) 1px, transparent 1px),
+        radial-gradient(circle at 75% 35%, var(--mood-color) 2px, transparent 2px),
+        radial-gradient(circle at 25% 85%, var(--mood-color) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 65% 15%, var(--mood-color) 1px, transparent 1px);
+    background-size: 80px 80px, 120px 120px, 60px 60px, 100px 100px, 90px 90px, 70px 70px;
+    animation: overlayBackgroundSparkle var(--effect-speed, 8s) infinite linear;
+}
+
+@keyframes overlayBackgroundSparkle {
+    0% { 
+        background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
+        opacity: var(--effect-intensity, 0.3);
+    }
+    50% {
+        opacity: calc(var(--effect-intensity, 0.3) * 2);
+    }
+    100% { 
+        background-position: 80px 80px, 120px 120px, 60px 60px, 100px 100px, 90px 90px, 70px 70px;
+        opacity: var(--effect-intensity, 0.3);
+    }
+}
+
+/* Album Art Container - FIXED */
+.album-art {
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #333, #444);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.4s ease;
+}
+
+.album-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.album-art::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.album-art:hover::after {
+    opacity: 1;
+}
+
+/* Track Information */
+.track-info {
+    flex: 1;
+    min-width: 0; /* Allows text to truncate */
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.track-title {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    color: var(--text-primary);
+    max-width: 100%;
+    transition: font-size 0.3s ease;
+}
+
+/* Dynamische Titelgröße basierend auf Länge */
+.track-title.length-short {
+    font-size: 48px;
+}
+
+.track-title.length-medium {
+    font-size: 36px;
+}
+
+.track-title.length-long {
+    font-size: 28px;
+}
+
+.track-artist {
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-secondary);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+    opacity: 0.95;
+    max-width: 100%;
+    transition: font-size 0.3s ease;
+}
+
+/* Dynamische Künstlergröße basierend auf Länge */
+.track-artist.length-short {
+    font-size: 28px;
+}
+
+.track-artist.length-medium {
+    font-size: 22px;
+}
+
+.track-artist.length-long {
+    font-size: 18px;
+}
+
+/* Status Indicator - Hidden */
+.status {
+    display: none;
+}
+
+/* Default Music Icon */
+.default-icon {
+    font-size: 32px;
+    color: var(--text-muted);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Remove old animations that moved entire elements */
+
+/* Intensity Modifiers - Optimiert für Performance */
+.overlay.intensity-low {
+    --effect-intensity: 0.3;
+    --effect-speed: 5s;
+}
+
+.overlay.intensity-medium {
+    --effect-intensity: 0.6;
+    --effect-speed: 3s;
+}
+
+.overlay.intensity-high {
+    --effect-intensity: 1.0;
+    --effect-speed: 2s;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .overlay {
+        width: 400px;
+        height: 160px;
+        padding: 20px;
+    }
+
+    .album-art,
+    .album-cover-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .track-title.length-short {
+        font-size: 24px;
+    }
+
+    .track-title.length-medium {
+        font-size: 20px;
+    }
+
+    .track-title.length-long {
+        font-size: 16px;
+    }
+
+    .track-artist.length-short {
+        font-size: 16px;
+    }
+
+    .track-artist.length-medium {
+        font-size: 14px;
+    }
+
+    .track-artist.length-long {
+        font-size: 13px;
+    }
+}
+
+/* Special Effects for Different Moods */
+.mood-energetic {
+    animation: energeticBounce 1s infinite ease-in-out;
+}
+
+@keyframes energeticBounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-5px) scale(1.02); }
+}
+
+.mood-calm {
+    animation: calmFloat 6s infinite ease-in-out;
+}
+
+@keyframes calmFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.mood-dark {
+    background: rgba(0, 0, 0, 0.98);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.8),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.mood-bright {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Text Animation for Long Titles */
+.track-title.overflow {
+    animation: scrollText 10s linear infinite;
+}
+
+@keyframes scrollText {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(0); }
+    75% { transform: translateX(-50%); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Loading State */
+.overlay.loading {
+    opacity: 0.7;
+}
+
+.overlay.loading::before {
+    animation: loadingPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes loadingPulse {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.3; }
+}
+
+/* Error State */
+.overlay.error {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.overlay.error .track-title {
+    color: #ef4444;
+}

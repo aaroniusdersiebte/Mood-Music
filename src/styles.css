@@ -1,0 +1,1519 @@
+/* Mood Music Player Styles */
+:root {
+    --primary-color: #121212;
+    --secondary-color: #847cf7;
+    --accent-color: #ffffff;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --text-muted: #666666;
+    --border-color: #333333;
+    --hover-color: #1e1e1e;
+    --success-color: #34d399;
+    --warning-color: #fbbf24;
+    --error-color: #ef4444;
+    --border-radius: 8px;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-primary);
+    overflow: hidden;
+    user-select: none;
+    -webkit-app-region: no-drag;
+}
+
+#app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Toolbar */
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    -webkit-app-region: drag;
+    z-index: 100;
+}
+
+.toolbar-left,
+.toolbar-center,
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    -webkit-app-region: no-drag;
+}
+
+.toolbar-center {
+    justify-content: center;
+}
+
+.toolbar-right {
+    justify-content: flex-end;
+}
+
+.app-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Player Controls */
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.control-btn:hover {
+    background: var(--hover-color);
+    color: var(--text-primary);
+}
+
+.control-btn.primary {
+    background: var(--secondary-color);
+    color: white;
+    width: 48px;
+    height: 48px;
+}
+
+.control-btn.primary:hover {
+    background: color-mix(in srgb, var(--secondary-color) 80%, white 20%);
+}
+
+/* Volume Control */
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 16px;
+}
+
+.slider {
+    width: 80px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-color);
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: var(--primary-color);
+    border-right: 1px solid var(--border-color);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar-section {
+    margin-bottom: 32px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.section-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.add-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.add-btn:hover {
+    background: color-mix(in srgb, var(--secondary-color) 80%, white 20%);
+    transform: scale(1.05);
+}
+
+/* Moods List */
+.moods-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mood-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.mood-item:hover {
+    background: var(--hover-color);
+}
+
+.mood-item.active {
+    background: color-mix(in srgb, var(--secondary-color) 20%, transparent 80%);
+    border: 1px solid var(--secondary-color);
+}
+
+.mood-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.mood-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mood-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mood-count {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.mood-play {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.mood-item:hover .mood-play {
+    opacity: 1;
+}
+
+/* Library Stats */
+.library-stats {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+/* Content Area */
+.content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Now Playing */
+.now-playing {
+    padding: 24px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--secondary-color) 10%, var(--primary-color) 90%) 100%);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.now-playing {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.track-art {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: var(--border-color);
+    flex-shrink: 0;
+}
+
+.track-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.track-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.track-info h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-info p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--secondary-color);
+    border-radius: 3px;
+    transition: width 0.1s ease;
+}
+
+.progress-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.progress-container span {
+    font-size: 12px;
+    color: var(--text-muted);
+    min-width: 40px;
+    text-align: center;
+}
+
+/* Mood Content */
+.mood-content {
+    flex: 1;
+    padding: 24px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.mood-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.mood-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.mood-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.mood-play-btn,
+.mood-shuffle-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.mood-play-btn:hover,
+.mood-shuffle-btn:hover {
+    background: var(--hover-color);
+    border-color: var(--secondary-color);
+}
+
+.mood-play-btn {
+    background: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+
+.mood-play-btn:hover {
+    background: color-mix(in srgb, var(--secondary-color) 80%, white 20%);
+}
+
+/* Tracks Container */
+.tracks-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.tracks-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tracks-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tracks-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.tracks-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Track Items */
+.track-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.track-item:hover {
+    background: var(--hover-color);
+}
+
+.track-item.playing {
+    background: color-mix(in srgb, var(--secondary-color) 15%, transparent 85%);
+}
+
+.track-item.playing .track-title {
+    color: var(--secondary-color);
+}
+
+.track-number {
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.track-item:hover .track-number {
+    display: none;
+}
+
+.track-item .play-btn {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.track-item:hover .play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.track-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.track-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-artist {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-duration {
+    font-size: 12px;
+    color: var(--text-muted);
+    min-width: 50px;
+    text-align: right;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.empty-state svg {
+    margin-bottom: 16px;
+}
+
+.empty-state p {
+    font-size: 14px;
+}
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal {
+    background: var(--primary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 480px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.modal.large {
+    width: 640px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    background: var(--hover-color);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--primary-color);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--secondary-color) 20%, transparent 80%);
+}
+
+.form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 8px;
+}
+
+.form-group input[type="color"] {
+    width: 60px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+.form-group input[type="range"] {
+    padding: 0;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn:hover {
+    background: var(--hover-color);
+}
+
+.btn.primary {
+    background: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+
+.btn.primary:hover {
+    background: color-mix(in srgb, var(--secondary-color) 80%, white 20%);
+}
+
+.btn.small {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* Settings Tabs */
+.settings-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 12px 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition);
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    color: var(--secondary-color);
+    border-bottom-color: var(--secondary-color);
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* OBS Info */
+.obs-info {
+    background: var(--hover-color);
+    padding: 16px;
+    border-radius: var(--border-radius);
+    margin-top: 16px;
+}
+
+.obs-info p {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.obs-info code {
+    display: block;
+    background: var(--primary-color);
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 12px;
+    color: var(--secondary-color);
+    margin-bottom: 12px;
+    word-break: break-all;
+}
+
+/* Mood Preview */
+.mood-preview {
+    width: 100%;
+    height: 60px;
+    border-radius: var(--border-radius);
+    background: var(--hover-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.mood-preview-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    z-index: 1;
+}
+
+/* Mood Effect Animations */
+@keyframes moodPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.02); }
+}
+
+@keyframes moodWave {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-1px) rotate(0.5deg); }
+    75% { transform: translateY(1px) rotate(-0.5deg); }
+}
+
+@keyframes moodGlow {
+    0%, 100% { box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1); }
+    50% { box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.2), 0 0 15px currentColor; }
+}
+
+@keyframes moodGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.mood-preview.effect-pulse {
+    animation: moodPulse 2s infinite ease-in-out;
+}
+
+.mood-preview.effect-wave {
+    animation: moodWave 3s infinite ease-in-out;
+}
+
+.mood-preview.effect-glow {
+    animation: moodGlow 2s infinite ease-in-out;
+}
+
+.mood-preview.effect-gradient {
+    background-size: 200% 200%;
+    animation: moodGradient 4s infinite ease-in-out;
+}
+
+/* Context Menu */
+.context-menu {
+    position: fixed;
+    background: var(--primary-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    min-width: 160px;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.context-item {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.context-item:hover {
+    background: var(--hover-color);
+}
+
+.context-item.separator {
+    height: 1px;
+    background: var(--border-color);
+    margin: 4px 0;
+    padding: 0;
+    cursor: default;
+}
+
+.context-item.separator:hover {
+    background: var(--border-color);
+}
+
+.context-item.disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.context-item.disabled:hover {
+    background: transparent;
+}
+
+/* Drag and Drop */
+.drag-over {
+    background: color-mix(in srgb, var(--secondary-color) 10%, transparent 90%);
+    border: 2px dashed var(--secondary-color);
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px currentColor; }
+    50% { box-shadow: 0 0 20px currentColor; }
+}
+
+.effect-pulse {
+    animation: pulse 2s infinite;
+}
+
+.effect-wave {
+    animation: wave 3s infinite;
+}
+
+.effect-glow {
+    animation: glow 2s infinite;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 240px;
+    }
+    
+    .modal {
+        width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .toolbar-center {
+        order: 3;
+        flex: 0;
+    }
+    
+    .sidebar {
+        width: 200px;
+    }
+    
+    .now-playing {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .track-art {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* Drag and Drop */
+.drag-over {
+    background: color-mix(in srgb, var(--secondary-color) 10%, transparent 90%);
+    border: 2px dashed var(--secondary-color);
+    transform: scale(1.02);
+}
+
+.drop-target {
+    border: 1px dashed var(--secondary-color);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.drop-target:not(.drag-over) {
+    animation: dropTargetPulse 2s infinite;
+}
+
+.track-item.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+    pointer-events: none;
+}
+
+@keyframes dropTargetPulse {
+    0%, 100% { 
+        border-color: var(--secondary-color); 
+        box-shadow: 0 0 0 0 rgba(132, 124, 247, 0.4);
+    }
+    50% { 
+        border-color: color-mix(in srgb, var(--secondary-color) 70%, white 30%);
+        box-shadow: 0 0 0 3px rgba(132, 124, 247, 0.2);
+    }
+}
+
+/* Drag and Drop Improvements */
+.drop-indicator-content {
+    text-align: center;
+    animation: dropIndicatorFloat 2s ease-in-out infinite;
+}
+
+.drop-indicator-content h3 {
+    margin: 16px 0 8px;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+.drop-indicator-content p {
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+@keyframes dropIndicatorFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Notification Improvements */
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.notification-icon {
+    font-size: 18px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+}
+
+.notification-message {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Mood Preview Improvements */
+.mood-preview {
+    width: 100%;
+    height: 80px;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 8px;
+    border: 2px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+
+.mood-preview-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--mood-color, var(--secondary-color));
+    opacity: 0.2;
+    transition: all 0.3s ease;
+    z-index: 0;
+}
+
+.mood-preview-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    z-index: 2;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+/* Background Effect Animations - Only Background Moves */
+.mood-preview.effect-pulse .mood-preview-background {
+    animation: moodBackgroundPulse var(--effect-speed, 2s) infinite ease-in-out;
+}
+
+.mood-preview.effect-wave .mood-preview-background {
+    animation: moodBackgroundWave var(--effect-speed, 3s) infinite ease-in-out;
+}
+
+.mood-preview.effect-glow .mood-preview-background {
+    animation: moodBackgroundGlow var(--effect-speed, 2s) infinite ease-in-out;
+    filter: blur(2px);
+}
+
+.mood-preview.effect-gradient .mood-preview-background {
+    background: linear-gradient(
+        45deg,
+        var(--mood-color, var(--secondary-color)),
+        color-mix(in srgb, var(--mood-color, var(--secondary-color)) 50%, white 50%),
+        var(--mood-color, var(--secondary-color))
+    );
+    background-size: 300% 300%;
+    animation: moodBackgroundGradient var(--effect-speed, 4s) infinite ease-in-out;
+}
+
+.mood-preview.effect-sparkle .mood-preview-background {
+    background-image: 
+        radial-gradient(circle at 20% 20%, var(--mood-color, var(--secondary-color)) 1px, transparent 1px),
+        radial-gradient(circle at 80% 80%, var(--mood-color, var(--secondary-color)) 1px, transparent 1px),
+        radial-gradient(circle at 40% 60%, var(--mood-color, var(--secondary-color)) 1px, transparent 1px),
+        radial-gradient(circle at 70% 30%, var(--mood-color, var(--secondary-color)) 1px, transparent 1px);
+    background-size: 50px 50px, 70px 70px, 35px 35px, 60px 60px;
+    animation: moodBackgroundSparkle var(--effect-speed, 6s) infinite linear;
+}
+
+/* Keyframe Animations for Background Effects */
+@keyframes moodBackgroundPulse {
+    0%, 100% { 
+        opacity: 0.1;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: var(--effect-intensity, 0.4);
+        transform: scale(1.05);
+    }
+}
+
+@keyframes moodBackgroundWave {
+    0%, 100% { 
+        transform: translateX(0) translateY(0) scale(1);
+        opacity: 0.15;
+    }
+    25% { 
+        transform: translateX(5px) translateY(-3px) scale(1.02);
+        opacity: var(--effect-intensity, 0.3);
+    }
+    75% { 
+        transform: translateX(-5px) translateY(3px) scale(0.98);
+        opacity: var(--effect-intensity, 0.3);
+    }
+}
+
+@keyframes moodBackgroundGlow {
+    0%, 100% { 
+        opacity: 0.2;
+        filter: blur(2px) brightness(1);
+    }
+    50% { 
+        opacity: var(--effect-intensity, 0.6);
+        filter: blur(4px) brightness(1.3);
+    }
+}
+
+@keyframes moodBackgroundGradient {
+    0%, 100% { 
+        background-position: 0% 50%;
+        opacity: 0.2;
+    }
+    50% { 
+        background-position: 100% 50%;
+        opacity: var(--effect-intensity, 0.4);
+    }
+}
+
+@keyframes moodBackgroundSparkle {
+    0% { 
+        background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px;
+        opacity: 0.3;
+    }
+    50% {
+        opacity: var(--effect-intensity, 0.6);
+    }
+    100% { 
+        background-position: 50px 50px, 70px 70px, 35px 35px, 60px 60px;
+        opacity: 0.3;
+    }
+}
+
+/* Intensity Classes */
+.mood-preview.intensity-low {
+    --effect-intensity: 0.2;
+    --effect-speed: 4s;
+}
+
+.mood-preview.intensity-medium {
+    --effect-intensity: 0.4;
+    --effect-speed: 2.5s;
+}
+
+.mood-preview.intensity-high {
+    --effect-intensity: 0.7;
+    --effect-speed: 1.5s;
+}
+
+/* Stats Grid for Edit Modal */
+.mood-stats {
+    background: var(--hover-color);
+    padding: 16px;
+    border-radius: var(--border-radius);
+    margin-top: 20px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--primary-color);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.stat-item:last-child {
+    grid-column: span 2;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.stat-item span:last-child {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Danger Button Style */
+.btn.danger {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
+.btn.danger:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+/* Enhanced Track Items */
+.track-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.track-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(132, 124, 247, 0.1),
+        transparent
+    );
+    transition: left 0.6s ease;
+}
+
+.track-item:hover::before {
+    left: 100%;
+}
+
+/* Enhanced Mood Items */
+.mood-item.active {
+    background: color-mix(in srgb, var(--secondary-color) 15%, transparent 85%);
+    box-shadow: inset 0 0 0 1px var(--secondary-color);
+}
+
+.mood-item.active .mood-color {
+    box-shadow: 0 0 8px currentColor;
+}
+
+/* Browser View Enhancements */
+.mood-effect-preview {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    background: var(--hover-color);
+    border-radius: var(--border-radius);
+    margin-top: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mood-effect-preview::before {
+    content: 'Vorschau des Effekts';
+    font-size: 12px;
+    color: var(--text-secondary);
+    z-index: 1;
+    position: relative;
+}
+
+.mood-effect-preview.effect-pulse {
+    animation: moodPulse 2s infinite ease-in-out;
+}
+
+.mood-effect-preview.effect-wave {
+    animation: moodWave 3s infinite ease-in-out;
+}
+
+.mood-effect-preview.effect-glow {
+    box-shadow: inset 0 0 10px var(--mood-color, var(--secondary-color));
+}
+
+.mood-effect-preview.effect-gradient {
+    background: linear-gradient(
+        45deg,
+        var(--mood-color, var(--secondary-color)),
+        color-mix(in srgb, var(--mood-color, var(--secondary-color)) 50%, white 50%)
+    );
+    background-size: 200% 200%;
+    animation: moodGradient 4s infinite ease-in-out;
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid var(--secondary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 10;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Edit Track Metadata Modal */
+.cover-upload-section {
+    margin-bottom: 24px;
+}
+
+.cover-preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cover-preview {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.cover-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.image-library {
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.image-library h4 {
+    margin-bottom: 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.image-library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.library-image-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.library-image-item:hover {
+    transform: scale(1.05);
+}
+
+.library-image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.library-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.library-image-item:hover .library-image-overlay {
+    opacity: 1;
+}
+
+.select-image-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.original-metadata {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metadata-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.metadata-item:last-child {
+    border-bottom: none;
+}
+
+.metadata-label {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.metadata-item span:last-child {
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Hotkey Styles */
+.hotkey-item {
+    display: grid;
+    grid-template-columns: 150px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+}
+
+.hotkey-input {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hotkey-input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.mood-hotkey-select {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: var(--text-primary);
+}

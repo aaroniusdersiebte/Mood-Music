@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Music - OBS Overlay</title>
+    <link rel="stylesheet" href="overlay.css">
+</head>
+<body>
+    <div id="overlay" class="overlay">
+        <div class="track-container">
+            <div class="album-cover-container">
+                <img id="albumCover" class="album-cover" alt="Album Cover">
+            </div>
+            <div class="track-info">
+                <div class="track-title" id="trackTitle">Mood Music Player</div>
+                <div class="track-artist" id="trackArtist"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SimpleOBSOverlay {
+            constructor() {
+                this.overlay = document.getElementById('overlay');
+                this.trackTitle = document.getElementById('trackTitle');
+                this.trackArtist = document.getElementById('trackArtist');
+                this.albumCover = document.getElementById('albumCover');
+
+                // Settings from config (will be loaded from server)
+                this.settings = {
+                    alwaysShow: false,
+                    showDuration: 10, // seconds
+                    transitionTime: 5 // seconds
+                };
+
+                this.hideTimeout = null;
+
+                this.init();
+            }
+
+            async init() {
+                console.log('OBS Overlay initializing...');
+
+                // Load settings from server first
+                await this.loadSettings();
+
+                this.connectToEventSource();
+
+                // Don't show overlay initially - wait for first track
+            }
+
+            async loadSettings() {
+                try {
+                    const response = await fetch('/api/current');
+                    const data = await response.json();
+
+                    // Get settings from the server
+                    if (data && data.config && data.config.obs) {
+                        this.settings = {
+                            alwaysShow: data.config.obs.alwaysShow || false,
+                            showDuration: data.config.obs.showDuration || 10,
+                            transitionTime: data.config.obs.transitionTime || 5
+                        };
+                    }
+
+                    console.log('Loaded settings:', this.settings);
+                } catch (error) {
+                    console.error('Error loading settings:', error);
+                    // Keep default settings
+                }
+            }
+
+            connectToEventSource() {
+                try {
+                    this.eventSource = new EventSource('/events');
+
+                    this.eventSource.onopen = () => {
+                        console.log('Connected to event source');
+                    };
+
+                    this.eventSource.onmessage = (event) => {
+                        try {
+                            const data = JSON.parse(event.data);
+                            console.log('Received event:', data.type, data.data);
+                            this.handleEvent(data.type, data.data);
+                        } catch (error) {
+                            console.error('Error parsing event data:', error);
+                        }
+                    };
+
+                    this.eventSource.onerror = (error) => {
+                        console.error('EventSource error:', error);
+
+                        // Attempt to reconnect after 5 seconds
+                        setTimeout(() => {
+                            console.log('Attempting to reconnect...');
+                            this.connectToEventSource();
+                        }, 5000);
+                    };
+                } catch (error) {
+                    console.error('Failed to create EventSource:', error);
+                }
+            }
+
+            handleEvent(type, data) {
+                switch (type) {
+                    case 'connected':
+                        console.log('Connected to server');
+                        break;
+                    case 'track-changed':
+                        this.updateTrack(data.track, data.mood);
+                        break;
+                    case 'playback-changed':
+                        this.updatePlaybackState(data.isPlaying);
+                        break;
+                }
+            }
+
+            updateTrack(track, mood) {
+                console.log('Updating track:', track, mood);
+
+                // Get display metadata (custom metadata takes precedence over original)
+                const displayTitle = track.customMetadata?.title || track.title || 'Unknown Title';
+                const displayArtist = track.customMetadata?.artist || track.artist;
+                const displayCover = track.customMetadata?.cover || track.picture;
+
+                // Update title with dynamic sizing
+                this.trackTitle.textContent = displayTitle;
+                this.applyDynamicTextSize(this.trackTitle, displayTitle);
+
+                // Update artist (show only if available)
+                if (displayArtist && displayArtist !== 'Unknown Artist') {
+                    this.trackArtist.textContent = displayArtist;
+                    this.trackArtist.style.display = 'block';
+                    this.applyDynamicTextSize(this.trackArtist, displayArtist);
+                } else {
+                    this.trackArtist.style.display = 'none';
+                }
+
+                // Update album cover
+                if (displayCover) {
+                    try {
+                        // Check if it's a custom cover (data URL string) or original metadata (object)
+                        if (typeof displayCover === 'string') {
+                            // Custom cover uploaded by user (Base64 data URL)
+                            this.albumCover.src = displayCover;
+                            this.albumCover.style.display = 'block';
+
+                            // Cleanup old blob URL if any
+                            if (this.currentBlobUrl) {
+                                URL.revokeObjectURL(this.currentBlobUrl);
+                                this.currentBlobUrl = null;
+                            }
+                        } else if (displayCover.data) {
+                            // Original metadata picture (convert to blob URL)
+                            const uint8Array = new Uint8Array(displayCover.data);
+                            const blob = new Blob([uint8Array], { type: displayCover.format });
+                            const url = URL.createObjectURL(blob);
+
+                            this.albumCover.src = url;
+                            this.albumCover.style.display = 'block';
+
+                            // Cleanup old blob URL
+                            this.albumCover.onload = () => {
+                                if (this.currentBlobUrl) {
+                                    URL.revokeObjectURL(this.currentBlobUrl);
+                                }
+                                this.currentBlobUrl = url;
+                            };
+                        } else {
+                            this.setDefaultCover();
+                        }
+                    } catch (error) {
+                        console.error('Error loading album cover:', error);
+                        this.setDefaultCover();
+                    }
+                } else {
+                    this.setDefaultCover();
+                }
+
+                // Apply mood effects
+                if (mood) {
+                    this.applyMoodEffects(mood);
+                }
+
+                // Show overlay and schedule hide
+                this.showOverlay();
+            }
+
+            setDefaultCover() {
+                // Use SVG as default cover
+                this.albumCover.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjZmZmZmZmIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xMiAzdjEwLjU1Yy0uNTktLjM0LTEuMjctLjU1LTItLjU1LTIuMjEgMC00IDEuNzktNCA0czEuNzkgNCA0IDQgNC0xLjc5IDQtNFY3aDRWM2gtNnoiLz48L3N2Zz4=';
+                this.albumCover.style.display = 'block';
+            }
+
+            showOverlay() {
+                // Clear any existing hide timeout
+                if (this.hideTimeout) {
+                    clearTimeout(this.hideTimeout);
+                    this.hideTimeout = null;
+                }
+
+                // Show the overlay
+                this.overlay.classList.remove('hidden');
+                this.overlay.classList.add('visible');
+
+                console.log('Overlay shown');
+
+                // Schedule hide if not set to always show
+                if (!this.settings.alwaysShow) {
+                    const duration = this.settings.showDuration * 1000; // Convert to milliseconds
+                    this.hideTimeout = setTimeout(() => {
+                        this.hideOverlay();
+                    }, duration);
+
+                    console.log(`Overlay will hide in ${this.settings.showDuration} seconds`);
+                } else {
+                    console.log('Overlay set to always show - will not auto-hide');
+                }
+            }
+
+            hideOverlay() {
+                this.overlay.classList.remove('visible');
+                this.overlay.classList.add('hidden');
+                console.log('Overlay hidden');
+            }
+
+            applyMoodEffects(mood) {
+                // Remove existing mood and intensity classes
+                this.overlay.className = 'overlay';
+
+                // Set CSS custom properties
+                document.documentElement.style.setProperty('--mood-color', mood.color);
+                document.documentElement.style.setProperty('--mood-color-secondary', mood.colorSecondary || mood.color);
+
+                // Apply effect classes
+                if (mood.effect && mood.effect !== 'none') {
+                    this.overlay.classList.add(`mood-${mood.effect}`);
+                }
+
+                // Apply intensity class
+                if (mood.intensity) {
+                    const intensityClass = this.getIntensityClass(mood.intensity);
+                    this.overlay.classList.add(intensityClass);
+                }
+
+                console.log('Applied mood effects:', {
+                    effect: mood.effect,
+                    color: mood.color,
+                    colorSecondary: mood.colorSecondary,
+                    intensity: mood.intensity
+                });
+            }
+
+            getIntensityClass(intensity) {
+                if (intensity >= 8) return 'intensity-high';
+                if (intensity >= 5) return 'intensity-medium';
+                return 'intensity-low';
+            }
+
+            updatePlaybackState(isPlaying) {
+                console.log('Playback state changed:', isPlaying);
+                // Could add play/pause indicators here
+            }
+
+            applyDynamicTextSize(element, text) {
+                // Remove existing length classes
+                element.classList.remove('length-short', 'length-medium', 'length-long');
+
+                // Apply class based on text length
+                const length = text.length;
+                if (length <= 15) {
+                    element.classList.add('length-short');
+                } else if (length <= 30) {
+                    element.classList.add('length-medium');
+                } else {
+                    element.classList.add('length-long');
+                }
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, initializing overlay...');
+            window.obsOverlay = new SimpleOBSOverlay();
+        });
+
+        // Test with fetch API as fallback
+        window.testConnection = async () => {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                console.log('Health check:', data);
+                return data;
+            } catch (error) {
+                console.error('Health check failed:', error);
+                return null;
+            }
+        };
+
+        // Auto-test connection after 2 seconds
+        setTimeout(() => {
+            window.testConnection().then(result => {
+                if (result) {
+                    console.log('Server is healthy:', result);
+                } else {
+                    console.error('Server health check failed');
+                }
+            });
+        }, 2000);
+    </script>
+</body>
+</html>
