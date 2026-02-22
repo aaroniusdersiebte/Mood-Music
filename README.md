@@ -1,5 +1,8 @@
 # Mood Music Player
 
+## Das hier ist ein Standalone, nicht das Mood Music das ich in meinem Streams benutze. 
+Die version ist mehr ein prof of conzept aber wird in dieser form nicht weiter entwickelt
+
 Ein erweiterbarer Musik Player mit Mood-basierten Gruppen und OBS Integration für Streamer.
 
 ## ✨ Neue Features
